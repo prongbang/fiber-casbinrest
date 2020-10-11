@@ -1,15 +1,18 @@
 package fibercasbinrest
 
 import (
-	"github.com/casbin/casbin/v2"
-	"github.com/gofiber/fiber/v2"
 	"log"
 	"strings"
+
+	"github.com/casbin/casbin/v2"
+	"github.com/gofiber/fiber/v2"
 )
 
 type (
+	// Skipper middleware function
 	Skipper func(*fiber.Ctx) bool
-	Config  struct {
+	// Config middleware model
+	Config struct {
 		Skipper  Skipper
 		Enforcer *casbin.Enforcer
 		Adapter  Adapter
@@ -17,15 +20,18 @@ type (
 )
 
 var (
+	// DefaultConfig initial default config
 	DefaultConfig = Config{
 		Skipper: DefaultSkipper,
 	}
 )
 
+// DefaultSkipper create default skipper
 func DefaultSkipper(*fiber.Ctx) bool {
 	return false
 }
 
+// New create middleware
 func New(ce *casbin.Enforcer, adt Adapter) fiber.Handler {
 	c := DefaultConfig
 	c.Enforcer = ce
@@ -33,6 +39,7 @@ func New(ce *casbin.Enforcer, adt Adapter) fiber.Handler {
 	return middlewareWithConfig(c)
 }
 
+// NewDefault create middleware
 func NewDefault(ce *casbin.Enforcer, secret string) fiber.Handler {
 	c := DefaultConfig
 	c.Enforcer = ce
@@ -68,7 +75,7 @@ func (a *Config) CheckPermissions(c *fiber.Ctx) bool {
 	allowed := false
 	for _, role := range roles {
 		result, err := a.Enforcer.Enforce(strings.ToLower(role), c.Path(), c.Method())
-		if  result && err == nil {
+		if result && err == nil {
 			allowed = true
 		} else {
 			log.Println(err)

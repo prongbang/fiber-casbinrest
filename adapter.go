@@ -6,10 +6,13 @@ import (
 )
 
 const (
-	RoleKey       = "roles"
+	// RoleKey default
+	RoleKey = "roles"
+	// RoleAnonymous anonymous
 	RoleAnonymous = "anonymous"
 )
 
+// Adapter interface for implements GetRoleByToken
 type Adapter interface {
 	GetRoleByToken(reqToken string) []string
 }
@@ -31,6 +34,7 @@ func (r *roleAdapter) GetRoleByToken(reqToken string) []string {
 	return s
 }
 
+// NewRoleAdapter create adapter
 func NewRoleAdapter(secret string) Adapter {
 	return &roleAdapter{
 		Secret: []byte(secret),

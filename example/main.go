@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+
 	"github.com/casbin/casbin/v2"
 	mongodbadapter "github.com/casbin/mongodb-adapter/v3"
 	"github.com/gofiber/fiber/v2"
 	fibercasbinrest "github.com/prongbang/fiber-casbinrest"
-	"log"
 )
 
 func main() {
