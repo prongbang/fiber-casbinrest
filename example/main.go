@@ -10,35 +10,9 @@ import (
 )
 
 func main() {
+	a, _ := mongodbadapter.NewAdapter("127.0.0.1:27017")
 
-	// Initialize a MongoDB adapter and use it in a Casbin enforcer:
-	// The adapter will use the database named "casbin".
-	// If it doesn't exist, the adapter will create it automatically.
-	a, err := mongodbadapter.NewAdapter("127.0.0.1:27017")
-	if err != nil {
-		panic(err)
-	}
-	// Or you can use an existing DB "abc" like this:
-	// The adapter will use the table named "casbin_rule".
-	// If it doesn't exist, the adapter will create it automatically.
-	// a := mongodbadapter.NewAdapter("127.0.0.1:27017/abc")
-
-	e, err := casbin.NewEnforcer("example/model.conf", a)
-	if err != nil {
-		panic(err)
-	}
-
-	// Initialize a Redis adapter and use it in a Casbin enforcer:
-	//a := redisadapter.NewAdapterWithPassword("tcp", "127.0.0.1:6379", "640c8dd3-54a7-42f5-9249-7d62dab232d2")
-	//e, err := casbin.NewEnforcer("example/rbac_model.conf", a)
-	//if err != nil {
-	//	panic(err)
-	//}
-
-	// Check the permission.
-	//r, err := e.Enforce("admin", "/admin", "POST")
-	//log.Println(r)
-	//log.Println(err)
+	e, _ := casbin.NewEnforcer("example/model.conf", a)
 
 	// Modify the policy.
 	_, _ = e.AddPolicy("anonymous", "/login", "GET")
