@@ -69,6 +69,5 @@ func main() {
 		return c.SendString("Hello, login 👋!")
 	})
 
-
 	log.Fatal(app.Listen(":3000"))
 }
