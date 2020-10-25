@@ -16,7 +16,7 @@ go get github.com/prongbang/fiber-casbinrest
 
 - model.conf
 
-```
+```editorconfig
 [request_definition]
 r = sub, obj, act
 
