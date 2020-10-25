@@ -80,7 +80,6 @@ func (a *Config) CheckPermissions(c *fiber.Ctx) bool {
 		} else {
 			log.Println(err)
 		}
-		log.Println(strings.ToLower(role), c.Path(), c.Method(), " -> ", allowed)
 	}
 	return allowed
 }
