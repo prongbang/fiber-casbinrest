@@ -34,6 +34,7 @@ m = r.sub == p.sub && (keyMatch(r.obj, p.obj) || keyMatch2(r.obj, p.obj)) && (r.
 
 ```
 p, admin, /user/*, (GET)|(POST)
+p, anonymous, /login, (GET)
 p, admin, /admin/user/:id, (GET)|(POST)
 ```
 
