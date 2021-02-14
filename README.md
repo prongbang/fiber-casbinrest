@@ -1,4 +1,4 @@
-# Casbin RESTful Adapter on Fiber web framework
+# Casbin RESTful Adapter on Fiber Web Framework
 
 Casbin RESTful adapter for Casbin [https://github.com/casbin/casbin](https://github.com/casbin/casbin)
 
@@ -56,13 +56,102 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 }
 ```
 
-## Usage
-
-- main.go 
+## Usage with File and JWT
 
 ```go
-package main
+import (
+	"github.com/casbin/casbin/v2"
+	"github.com/gofiber/fiber/v2"
+	fibercasbinrest "github.com/prongbang/fiber-casbinrest"
+	"log"
+)
 
+func main() {
+    e, _ := casbin.NewEnforcer("example/auth_model.conf", "example/policy.csv")
+    
+    app := fiber.New()
+    app.Use(fibercasbinrest.NewDefault(e, "secret"))
+    
+    app.Post("/admin", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, World 👋!")
+    })
+    
+    app.Get("/admin/user/:id", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, User 👋!")
+    })
+    
+    app.Get("/manage/:id", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, Manage 👋!")
+    })
+    
+    app.Get("/login", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, login 👋!")
+    })
+    
+    log.Fatal(app.Listen(":3000"))
+}
+```
+
+## Usage with Custom adapter and JWT
+
+```go
+import (
+	"github.com/casbin/casbin/v2"
+	"github.com/gofiber/fiber/v2"
+	fibercasbinrest "github.com/prongbang/fiber-casbinrest"
+	"log"
+)
+
+type redisAdapter struct {
+}
+
+func NewRedisAdapter() fibercasbinrest.Adapter {
+	return &redisAdapter{}
+}
+
+const mockAdminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+
+func (r *redisAdapter) GetRoleByToken(reqToken string) []string {
+    // Validate example not use on production
+	role := "anonymous"
+	if reqToken == mockAdminToken {
+		role = "admin"
+	} else if reqToken == "TOKEN_DBA" {
+		role = "dba"
+	}
+	return []string{role}
+}
+
+func main() {
+    adapter := NewRedisAdapter()
+    e, _ := casbin.NewEnforcer("example/auth_model.conf", "example/policy.csv")
+    
+    app := fiber.New()
+    app.Use(fibercasbinrest.New(e, adapter))
+    
+    app.Post("/admin", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, World 👋!")
+    })
+    
+    app.Get("/admin/user/:id", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, User 👋!")
+    })
+    
+    app.Get("/manage/:id", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, Manage 👋!")
+    })
+    
+    app.Get("/login", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, login 👋!")
+    })
+    
+    log.Fatal(app.Listen(":3000"))
+}
+```
+
+## Usage with MongoDB
+
+```go
 import (
 	"github.com/casbin/casbin/v2"
 	mongodbadapter "github.com/casbin/mongodb-adapter/v3"
@@ -80,7 +169,6 @@ func main() {
     _, _ = e.AddPolicy("admin", "/admin", "(GET)|(POST)")
     _, _ = e.AddPolicy("admin", "/admin/user/:id", "GET")
     _, _ = e.AddPolicy("admin", "/manage/*", "GET")
-    //e.RemovePolicy(...)
     
     // Save the policy back to DB.
     _ = e.SavePolicy()

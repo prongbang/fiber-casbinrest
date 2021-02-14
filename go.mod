@@ -7,5 +7,5 @@ require (
 	github.com/casbin/mongodb-adapter/v3 v3.0.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gofiber/fiber/v2 v2.0.6
-	github.com/stretchr/testify v1.6.1 // indirect
+	github.com/stretchr/testify v1.6.1
 )

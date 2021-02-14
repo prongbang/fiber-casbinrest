@@ -1,0 +1,4 @@
+p, admin, /*, (GET)|(POST)|(PUT)|(PATCH)|(DELETE)|(OPTIONS)
+p, anonymous, /login, (GET)
+p, dba, /dba, (GET)
+p, dba, /dba, (POST)

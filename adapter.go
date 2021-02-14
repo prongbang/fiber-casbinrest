@@ -1,10 +1,5 @@
 package fibercasbinrest
 
-import (
-	"encoding/json"
-	"fmt"
-)
-
 const (
 	// RoleKey default
 	RoleKey = "roles"
@@ -23,15 +18,7 @@ type roleAdapter struct {
 
 func (r *roleAdapter) GetRoleByToken(reqToken string) []string {
 	t := GetValue(reqToken, RoleKey, r.Secret)
-	var roles []interface{}
-	if b, err := json.Marshal(t); err == nil {
-		_ = json.Unmarshal(b, &roles)
-	}
-	s := make([]string, len(roles))
-	for i, v := range roles {
-		s[i] = fmt.Sprint(v)
-	}
-	return s
+	return ParseRoles(t)
 }
 
 // NewRoleAdapter create adapter
