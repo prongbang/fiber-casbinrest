@@ -2,6 +2,7 @@ package fibercasbinrest
 
 import (
 	"log"
+	"net/http"
 	"strings"
 
 	"github.com/casbin/casbin/v2"
@@ -55,7 +56,8 @@ func middlewareWithConfig(config Config) fiber.Handler {
 		if config.Skipper(c) || config.CheckPermissions(c) {
 			return c.Next()
 		}
-		return fiber.ErrForbidden
+		return c.Status(http.StatusForbidden).
+			JSON(fiber.Map{"message": "Forbidden"})
 	}
 }
 
