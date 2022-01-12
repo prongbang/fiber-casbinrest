@@ -26,7 +26,7 @@ func TestGetValueSuccess(t *testing.T) {
 	secret := []byte("test")
 
 	// When
-	actual := fibercasbinrest.GetValue(token, key, secret)
+	actual, _ := fibercasbinrest.GetValue(token, key, secret)
 
 	// Then
 	assert.Equal(t, actual, expect)
@@ -40,7 +40,7 @@ func TestGetValueError(t *testing.T) {
 	secret := []byte("invalid-secret")
 
 	// When
-	actual := fibercasbinrest.GetValue(token, key, secret)
+	actual, _ := fibercasbinrest.GetValue(token, key, secret)
 
 	// Then
 	assert.Equal(t, actual, expect)
@@ -69,4 +69,3 @@ func TestVerifyFalse(t *testing.T) {
 	// Then
 	assert.Equal(t, actual, false)
 }
-

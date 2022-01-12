@@ -1,7 +1,6 @@
 package fibercasbinrest
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -53,35 +52,38 @@ func middlewareWithConfig(config Config) fiber.Handler {
 		config.Skipper = DefaultConfig.Skipper
 	}
 	return func(c *fiber.Ctx) error {
-		if config.Skipper(c) || config.CheckPermissions(c) {
+		pass, err := config.CheckPermissions(c)
+		if config.Skipper(c) || (pass && err == nil) {
 			return c.Next()
 		}
+		if err != nil && strings.ToLower(err.Error()) == "token is expired" {
+			return c.Status(http.StatusUnauthorized).
+				JSON(fiber.Map{"message": err.Error()})
+		}
 		return c.Status(http.StatusForbidden).
-			JSON(fiber.Map{"message": "Forbidden"})
+			JSON(fiber.Map{"message": http.StatusText(http.StatusForbidden)})
 	}
 }
 
 // GetRole gets the roles name from the request.
-func (a *Config) GetRole(c *fiber.Ctx) []string {
+func (a *Config) GetRole(c *fiber.Ctx) ([]string, error) {
 	token := c.Get(fiber.HeaderAuthorization)
 	authorization := strings.Split(token, "Bearer")
 	if len(authorization) == 2 {
 		return a.Adapter.GetRoleByToken(strings.TrimSpace(authorization[1]))
 	}
-	return []string{RoleAnonymous}
+	return []string{RoleAnonymous}, nil
 }
 
 // CheckPermissions checks the role/path/method combination from the request.
-func (a *Config) CheckPermissions(c *fiber.Ctx) bool {
-	roles := a.GetRole(c)
+func (a *Config) CheckPermissions(c *fiber.Ctx) (bool, error) {
+	roles, err := a.GetRole(c)
 	allowed := false
 	for _, role := range roles {
-		result, err := a.Enforcer.Enforce(strings.ToLower(role), c.Path(), c.Method())
-		if result && err == nil {
+		result, e := a.Enforcer.Enforce(strings.ToLower(role), c.Path(), c.Method())
+		if result && e == nil {
 			allowed = true
-		} else {
-			log.Println(err)
 		}
 	}
-	return allowed
+	return allowed, err
 }

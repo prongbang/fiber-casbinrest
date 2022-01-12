@@ -112,7 +112,7 @@ func NewRedisAdapter() fibercasbinrest.Adapter {
 
 const mockAdminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
 
-func (r *redisAdapter) GetRoleByToken(reqToken string) []string {
+func (r *redisAdapter) GetRoleByToken(reqToken string) ([]string, error) {
     // Validate example not use on production
 	role := "anonymous"
 	if reqToken == mockAdminToken {
@@ -120,7 +120,7 @@ func (r *redisAdapter) GetRoleByToken(reqToken string) []string {
 	} else if reqToken == "TOKEN_DBA" {
 		role = "dba"
 	}
-	return []string{role}
+	return []string{role}, nil
 }
 
 func main() {

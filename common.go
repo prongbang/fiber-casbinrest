@@ -3,9 +3,7 @@ package fibercasbinrest
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 // Verify JWT
@@ -27,18 +25,16 @@ func ParseToken(token string, secret []byte) (*jwt.Token, error) {
 }
 
 // GetValue for get payload from JWT
-func GetValue(reqToken string, key string, secretKey []byte) interface{} {
+func GetValue(reqToken string, key string, secretKey []byte) (interface{}, error) {
 	token, err := ParseToken(reqToken, secretKey)
 	if err != nil {
-		log.Println(err)
-		return ""
+		return "", err
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
-		return claims[key]
+		return claims[key], nil
 	}
-	log.Println(claims.Valid().Error())
-	return ""
+	return "", claims.Valid()
 }
 
 // ParseRoles interface to string array

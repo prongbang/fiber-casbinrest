@@ -14,7 +14,7 @@ func TestGetRoleByTokenSuccess(t *testing.T) {
 	adpt := fibercasbinrest.NewRoleAdapter(secret)
 
 	// When
-	actual := adpt.GetRoleByToken(token)
+	actual, _ := adpt.GetRoleByToken(token)
 
 	// Then
 	assert.Equal(t, actual, expect)
