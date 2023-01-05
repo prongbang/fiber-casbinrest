@@ -58,10 +58,16 @@ func middlewareWithConfig(config Config) fiber.Handler {
 		}
 		if err != nil && strings.ToLower(err.Error()) == "token is expired" {
 			return c.Status(http.StatusUnauthorized).
-				JSON(fiber.Map{"message": err.Error()})
+				JSON(fiber.Map{
+					"code":    http.StatusUnauthorized,
+					"message": err.Error(),
+				})
 		}
 		return c.Status(http.StatusForbidden).
-			JSON(fiber.Map{"message": http.StatusText(http.StatusForbidden)})
+			JSON(fiber.Map{
+				"code":    http.StatusForbidden,
+				"message": http.StatusText(http.StatusForbidden),
+			})
 	}
 }
 
