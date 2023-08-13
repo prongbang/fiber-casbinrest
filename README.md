@@ -6,6 +6,8 @@ Casbin RESTful adapter for Casbin [https://github.com/casbin/casbin](https://git
 [![Codecov](https://img.shields.io/codecov/c/github/prongbang/fiber-casbinrest.svg)](https://codecov.io/gh/prongbang/fiber-casbinrest)
 [![Go Report Card](https://goreportcard.com/badge/github.com/prongbang/fiber-casbinrest)](https://goreportcard.com/report/github.com/prongbang/fiber-casbinrest)
 
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/prongbang)
+
 ## Install
 
 ```
